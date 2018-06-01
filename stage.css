@@ -1,0 +1,40 @@
+body {
+  padding-top: 5rem;
+}
+.starter-template {
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+#produits {
+border: medium solid #C0C0C0;
+width: 50%;
+}
+
+#ajouter{
+  border: none;
+  background-color: #00FF00;
+  border-radius: 8px;
+  padding:2px 0 2px 0;
+}
+
+#voir {
+  border: none;
+  background-color: #808080;
+  border-radius: 8px;
+  padding:2px 0 2px 0;
+}
+
+#modifier {
+  border: none;
+  background-color: #DAA520;
+  border-radius: 8px;
+  padding:2px 0 2px 0;
+}
+
+#supprimer {
+  border: none;
+  background-color: #FF0000;
+  border-radius: 8px;
+  padding:2px 0 2px 0;
+}
