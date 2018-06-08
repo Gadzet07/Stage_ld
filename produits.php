@@ -6,6 +6,7 @@
     <link href="./stage.css" rel="stylesheet">
     <link href="./css/bootstrap.css" rel="stylesheet">
     <link rel="icon" href="./autres/test.jpg">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.css">
     <link href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
     <script src="  https://code.jquery.com/jquery-3.3.1.js"></script>
@@ -14,6 +15,7 @@
     <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
 
     <title>Produits</title>
+
   </head>
   <body>
     <!-- Design de la page -->
@@ -43,7 +45,7 @@
             </div>
           </li>
         </ul>
-        <form class="form-inline my-2 my-lg-0">
+        <form class="form-inline my-2 my-lg-0"> <!-- Partie rechercher en haut à droite -->
           <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
@@ -53,32 +55,25 @@
     <!-- < ?php require "detailsV2.php"; ?> -->
 
     <main role="main" class="container">
-
-
       <div class="starter-template">
         <h1>Mon stage</h1>
         <p class="lead">C'est le résultat de mon boulot pendant la durée de stage.</p>
       </div>
 
         <input type="button" id="ajouter" value="Ajouter">
-        <input type="button" id="voir" value="Voir">
-        <!-- <a href="./detailsV2.php"> <input type="button" id="voir" value="Voir"></a> -->
-        <input type="button" id="modifier" value="Modifier">
         <input type="button" id="supprimer" value="Supprimer">
 
+            <!-- Connection à la base de donnée -->
             <?php
-              //Connection à la base de donnée
               $bdd = new PDO('mysql:host=localhost;dbname=stage_ld;charset=utf8', 'root', '');
               //Selection de toute la table
               $reponse = $bdd->query('SELECT * FROM produits');
-
-                //Affichage des produits da la base de donnée dans un tableau
                 ?>
 
+                <!-- Affichage des produits da la base de donnée dans un tableau -->
                 <table id="produits" class="table table-striped table-bordered" style="width:100%">
                   <!-- Affichage statique du type d'informations -->
                 <thead>
-                  <!-- <th></th> -->
                   <th>ID</th>
                   <th>Nom</th>
                   <th>Marque</th>
@@ -86,40 +81,109 @@
                   <th>Quantite</th>
                   <th></th>
                 </thead>
+
                 <!-- Affichage de chaque information au bon endroit -->
                   <tbody>
                     <?php foreach ($reponse as $value) //Pour chaque donnée recuperée
                       { ?>
                       <tr>
-
-                        <!--<td> <input type="radio" name="choix"; ?></td>  Affichage d'un bouton de séléction pour chaque produit -->
-                        <td><?php echo $value['id']; ?></td> <!-- Affichage des différentes information -->
+                        <!-- Affichage des différentes information -->
+                        <td><?php echo $value['id']; ?></td>
                         <td><?php echo $value['nom']; ?></td>
                         <td><?php echo $value['marque']; ?></td>
                         <td><?php echo $value['reference']; ?></td>
                         <td><?php echo $value['quantite']; ?></td>
-                        <td> <form method="post" action="detailsV2.php">
-                              <input type="hidden" name="choix" value="<?php echo $value['id'];?>">
-                              <input type="submit" value="id" class="btn btn-primary">
-                              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
-                               Afficher
-                             </button>
-                            </form>
+                        <!-- Bouton qui affiche un modale avec les déclinaisons du produit séléctionné -->
+                        <td>
+                            <button onclick="appelAjax2(<?php echo $value['id'];?>)" class="btn btn-success" data-toggle="modal" data-target="#exampleModalLong">
+                              Afficher
+                            </button>
                         </td>
                       </tr>
                     <?php
                       } ?>
                   </tbody>
                 </table>
-
-
-
     </main>
-    <!-- Fonction réalisant le tableau (dataTables) -->
+
+
+<script type="text/javascript">
+function appelAjax2(id){
+  $.ajax({
+    type:"POST",
+    url:"detailsV2.php",
+    data:"id=" + id,
+    success: function(data) {
+      console.log(data);
+      
+    }
+  })
+}
+</script>
+
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Détails</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+
+
+        <table id="details" class="table table-striped table-bordered" style="width:100%">
+          <!-- Affichage statique du type d'informations -->
+          <thead>
+            <!-- <th>id</th> -->
+            <th>ID</th>
+            <th>Couleur</th>
+            <th>Bonnet</th>
+            <th>Taille</th>
+            <th>Quantite</th>
+            <th>ID Produit</th>
+          </thead>
+
+          <tbody>
+            <?php foreach($reponse as $value)
+            {
+              ?>
+              <tr>
+                <td> <?php echo $value['id']; ?> </td>
+                <td> <?php echo $value['couleur']; ?> </td>
+                <td> <?php echo $value['bonnet']; ?> </td>
+                <td> <?php echo $value['taille']; ?> </td>
+                <td> <?php echo $value['quantite']; ?> </td>
+                <td> <?php echo $value['id_produit']; ?> </td>
+              </tr>
+            <?php
+          } ?>
+         </tbody>
+        </table>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
     <script type="text/javascript">
+    // Fonction réalisant le tableau des produits (dataTables)
         $(document).ready(function($) {
             $('#produits').DataTable();
         } );
+
+        // Fonction qui affiche l'id du produit selectionné grace a une alerte
+        function appelAjax(id) {
+          alert(id);
+        }
+
+
     </script>
   </body>
 </html>
