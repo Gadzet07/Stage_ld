@@ -42,3 +42,7 @@ width: 50%;
 #caseQuantite{
   width: 60px;
 }
+
+#modal-body{
+  width: auto;
+}
