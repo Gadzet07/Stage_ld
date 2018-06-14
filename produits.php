@@ -95,7 +95,7 @@
                         <td><?php echo $value['quantite']; ?></td>
                         <!-- Bouton qui affiche une modale avec les déclinaisons du produit séléctionné -->
                         <td>
-                            <button onclick="appelAjax(<?php echo $value['id'];?>)" class="btn btn-success" data-toggle="modal" data-target="#exampleModalLong">
+                            <button onclick="appelAjax(<?php echo $value['id'];?>,'<?php echo $value['nom'];?>','<?php echo $value['marque'];?>','<?php echo $value['reference'];?>')" class="btn btn-success" data-toggle="modal" data-target="#exampleModalLong">
                               Afficher
                             </button>
                         </td>
@@ -108,7 +108,7 @@
 
 <!-- script javascript qui permet d'aller chercher les declinaisons dans la base de donnees -->
 <script type="text/javascript">
-function appelAjax(id){
+function appelAjax(id, name, marque, reference){
   $.ajax({
     type:"POST", // on envoie des données
     url:"detailsV2.php", // on envoie au fichier detailsV2.php
@@ -116,8 +116,9 @@ function appelAjax(id){
     success: function(donnesRecues) { //si cela fonctionne
       tableDonneesRecues = JSON.parse(donnesRecues); // on stocke les donnees recues
       $(".modal-body").empty(); // on nettoie la modale
+      $(".modal-title").html('Modification quantite ' + name + ' ' + marque + ' ' + reference);
       $(".modal-body").append("<table id='decli'class='table table-striped table-bordered' style='width:100%'><thead><th>"+["ID"]+"</th><th>"+["Couleur"]+"</th><th>"+["Bonnet"]+"</th><th>"+["Taille"]+"</th><th>"+["Quantite"]+"</th><th>"+["ID-Produit"]+"</th><th></th><tbody>"); // on creer les differentes colonnes et leur nom
-      // Parcour tableau, accede à id
+      // Parcourt tableau, accede à id
       for (var i = 0; i < tableDonneesRecues.length; i++) {
                     if(tableDonneesRecues[i]["bonnet"] !== ""){ // s'il y a quelque chose dans bonnet on affiche toutes les valeurs
                       $("#decli").append("<tr><td>"+tableDonneesRecues[i]["id"]+"</td><td>"+tableDonneesRecues[i]["couleur"]+"</td><td>" + tableDonneesRecues[i]["bonnet"] + "</td><td>"+tableDonneesRecues[i]["taille"]+"</td><td><input id='caseQuantite' type='number' value="+tableDonneesRecues[i]["quantite"]+"></td><td>"+tableDonneesRecues[i]["id_produit"]+"</td><td><input type='submit' value='test'></td></tr>");
@@ -131,6 +132,7 @@ function appelAjax(id){
   })
 }
 </script>
+
 <!-- Creation de la modale -->
 <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
   <div class="modal-dialog" role="document">
