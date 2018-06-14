@@ -93,7 +93,7 @@
                         <td><?php echo $value['marque']; ?></td>
                         <td><?php echo $value['reference']; ?></td>
                         <td><?php echo $value['quantite']; ?></td>
-                        <!-- Bouton qui affiche un modale avec les déclinaisons du produit séléctionné -->
+                        <!-- Bouton qui affiche une modale avec les déclinaisons du produit séléctionné -->
                         <td>
                             <button onclick="appelAjax2(<?php echo $value['id'];?>)" class="btn btn-success" data-toggle="modal" data-target="#exampleModalLong">
                               Afficher
@@ -104,18 +104,29 @@
                       } ?>
                   </tbody>
                 </table>
-    </main>
+  </main>
 
-
+<!-- script javascript qui permet d'aller chercher les declinaisons dans la base de données -->
 <script type="text/javascript">
 function appelAjax2(id){
   $.ajax({
     type:"POST",
     url:"detailsV2.php",
     data:"id=" + id,
-    success: function(data) {
-      console.log(data);
-      
+    success: function(donnesRecues) {
+      tableDonneesRecues = JSON.parse(donnesRecues);
+      $(".modal-body").empty();
+      $(".modal-body").append("<table id='decli'class='table table-striped table-bordered' style='width:100%'><thead><th>"+["ID"]+"</th><th>"+["Couleur"]+"</th><th>"+["Bonnet"]+"</th><th>"+["Taille"]+"</th><th>"+["Quantite"]+"</th><th>"+["ID-Produit"]+"</th><tbody>");
+      // Parcour tableau, accede à id
+      for (var i = 0; i < tableDonneesRecues.length; i++) {
+                    if(tableDonneesRecues[i]["bonnet"] !== ""){
+                      $("#decli").append("<tr><td>"+tableDonneesRecues[i]["id"]+"</td><td>"+tableDonneesRecues[i]["couleur"]+"</td><td>" + tableDonneesRecues[i]["bonnet"] + "</td><td>"+tableDonneesRecues[i]["taille"]+"</td><td><input id='caseQuantite' type='number' value="+tableDonneesRecues[i]["quantite"]+"></td><td>"+tableDonneesRecues[i]["id_produit"]+"</td></tr>");
+                    }else{
+                      $("#decli").append("<tr><td>"+tableDonneesRecues[i]["id"]+"</td><td>"+tableDonneesRecues[i]["couleur"]+"</td><td>NA</td><td>"+tableDonneesRecues[i]["taille"]+"</td><td><input id='caseQuantite' type='number' value="+tableDonneesRecues[i]["quantite"]+"></td><td>"+tableDonneesRecues[i]["id_produit"]+"</td></tr>");
+                    }
+      }
+      $(".modal-body").append("</tbody></table>");
+      $('#decli').DataTable();
     }
   })
 }
@@ -134,37 +145,10 @@ function appelAjax2(id){
 
 
 
-        <table id="details" class="table table-striped table-bordered" style="width:100%">
-          <!-- Affichage statique du type d'informations -->
-          <thead>
-            <!-- <th>id</th> -->
-            <th>ID</th>
-            <th>Couleur</th>
-            <th>Bonnet</th>
-            <th>Taille</th>
-            <th>Quantite</th>
-            <th>ID Produit</th>
-          </thead>
-
-          <tbody>
-            <?php foreach($reponse as $value)
-            {
-              ?>
-              <tr>
-                <td> <?php echo $value['id']; ?> </td>
-                <td> <?php echo $value['couleur']; ?> </td>
-                <td> <?php echo $value['bonnet']; ?> </td>
-                <td> <?php echo $value['taille']; ?> </td>
-                <td> <?php echo $value['quantite']; ?> </td>
-                <td> <?php echo $value['id_produit']; ?> </td>
-              </tr>
-            <?php
-          } ?>
-         </tbody>
-        </table>
 
 
       </div>
+      <!-- Bouton fermer en bas de la modale -->
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
