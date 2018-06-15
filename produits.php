@@ -16,6 +16,7 @@
     <title>Produits</title>
 
   </head>
+
   <body>
     <!-- Design de la page -->
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
@@ -62,103 +63,103 @@
         <input type="button" id="ajouter" value="Ajouter">
         <input type="button" id="supprimer" value="Supprimer">
 
-            <!-- Connection à la base de donnée -->
-            <?php
-              $bdd = new PDO('mysql:host=localhost;dbname=stage_ld;charset=utf8', 'root', '');
-              //Selection de toute la table
-              $reponse = $bdd->query('SELECT * FROM produits');
-                ?>
+        <!-- Connection à la base de donnée -->
+        <?php
+          $bdd = new PDO('mysql:host=localhost;dbname=stage_ld;charset=utf8', 'root', '');
+          //Selection de toute la table
+          $reponse = $bdd->query('SELECT * FROM produits');
+            ?>
 
-                <!-- Affichage des produits da la base de donnée dans un tableau -->
-                <table id="produits" class="table table-striped table-bordered" style="width:100%">
-                  <!-- Affichage statique du type d'informations -->
-                <thead>
-                  <th>ID</th>
-                  <th>Nom</th>
-                  <th>Marque</th>
-                  <th>Reference</th>
-                  <th>Quantite</th>
-                  <th></th>
-                </thead>
+            <!-- Affichage des produits da la base de donnée dans un tableau -->
+            <table id="produits" class="table table-striped table-bordered" style="width:100%">
+              <!-- Affichage statique du type d'informations -->
+            <thead>
+              <th>ID</th>
+              <th>Nom</th>
+              <th>Marque</th>
+              <th>Reference</th>
+              <th>Quantite</th>
+              <th></th>
+            </thead>
 
-                <!-- Affichage de chaque information au bon endroit -->
-                  <tbody>
-                    <?php foreach ($reponse as $value) //Pour chaque donnée recuperée
-                      { ?>
-                      <tr>
-                        <!-- Affichage des différentes information -->
-                        <td><?php echo $value['id']; ?></td>
-                        <td><?php echo $value['nom']; ?></td>
-                        <td><?php echo $value['marque']; ?></td>
-                        <td><?php echo $value['reference']; ?></td>
-                        <td><?php echo $value['quantite']; ?></td>
-                        <!-- Bouton qui affiche une modale avec les déclinaisons du produit séléctionné -->
-                        <td>
-                            <button onclick="appelAjax(<?php echo $value['id'];?>,'<?php echo $value['nom'];?>','<?php echo $value['marque'];?>','<?php echo $value['reference'];?>')" class="btn btn-success" data-toggle="modal" data-target="#exampleModalLong">
-                              Afficher
-                            </button>
-                        </td>
-                      </tr>
-                    <?php
-                      } ?>
-                  </tbody>
-                </table>
+            <!-- Affichage de chaque information au bon endroit -->
+              <tbody>
+                <?php foreach ($reponse as $value) //Pour chaque donnée recuperée
+                  { ?>
+                  <tr>
+                    <!-- Affichage des différentes information -->
+                    <td><?php echo $value['id']; ?></td>
+                    <td><?php echo $value['nom']; ?></td>
+                    <td><?php echo $value['marque']; ?></td>
+                    <td><?php echo $value['reference']; ?></td>
+                    <td><?php echo $value['quantite']; ?></td>
+                    <!-- Bouton qui affiche une modale avec les déclinaisons du produit séléctionné -->
+                    <td>
+                        <button onclick="modaleQuantite(<?php echo $value['id'];?>,'<?php echo $value['nom'];?>','<?php echo $value['marque'];?>','<?php echo $value['reference'];?>')" class="btn btn-success" data-toggle="modal" data-target="#exampleModalLong">
+                          Afficher
+                        </button>
+                    </td>
+                  </tr>
+                <?php
+                  } ?>
+              </tbody>
+            </table>
+
   </main>
-
-<!-- script javascript qui permet d'aller chercher les declinaisons dans la base de donnees -->
-<script type="text/javascript">
-function appelAjax(id, name, marque, reference){
-  $.ajax({
-    type:"POST", // on envoie des données
-    url:"detailsV2.php", // on envoie au fichier detailsV2.php
-    data:"id=" + id, // on envoie l'id
-    success: function(donnesRecues) { //si cela fonctionne
-      tableDonneesRecues = JSON.parse(donnesRecues); // on stocke les donnees recues
-      $(".modal-body").empty(); // on vide la modale
-      $(".modal-title").html('Modification quantite ' + name + ' ' + marque + ' ' + reference);
-      $(".modal-body").append("<table id='decli'class='table table-striped table-bordered' style='width:100%'><thead><th>"+["ID"]+"</th><th>"+["Couleur"]+"</th><th>"+["Bonnet"]+"</th><th>"+["Taille"]+"</th><th>"+["Quantite"]+"</th><th>"+["ID-Produit"]+"</th><th></th><tbody>"); // on creer les differentes colonnes et leur nom
-      // Parcourt tableau, accede à id
-      for (var i = 0; i < tableDonneesRecues.length; i++) {
-                    if(tableDonneesRecues[i]["bonnet"] !== ""){ // s'il y a quelque chose dans bonnet on affiche toutes les valeurs
-                      $("#decli").append("<tr><td>"+tableDonneesRecues[i]["id"]+"</td><td>"+tableDonneesRecues[i]["couleur"]+"</td><td>" + tableDonneesRecues[i]["bonnet"] + "</td><td>"+tableDonneesRecues[i]["taille"]+"</td><td><input id='caseQuantite' type='number' value="+tableDonneesRecues[i]["quantite"]+"></td><td>"+tableDonneesRecues[i]["id_produit"]+"</td><td><input type='submit' value='Actualiser'></td></tr>");
-                    }else{ // s'il n'y a rien dans bonnet on affiche tout ormis la colonne bonnet
-                      $("#decli").append("<tr><td>"+tableDonneesRecues[i]["id"]+"</td><td>"+tableDonneesRecues[i]["couleur"]+"</td><td>NA</td><td>"+tableDonneesRecues[i]["taille"]+"</td><td><input id='caseQuantite' type='number' value="+tableDonneesRecues[i]["quantite"]+"></td><td>"+tableDonneesRecues[i]["id_produit"]+"</td><td><input type='submit' value='Actualiser'></td></tr>");
-                    }
+  <!-- script javascript qui permet d'aller chercher les declinaisons dans la base de donnees -->
+  <script type="text/javascript">
+  function modaleQuantite(id, name, marque, reference){
+    $.ajax({
+      type:"POST", // on envoie des données
+      url:"detailsV2.php", // on envoie au fichier detailsV2.php
+      data:"id=" + id, // on envoie l'id
+      success: function(donnesRecues) { //si cela fonctionne
+        tableDonneesRecues = JSON.parse(donnesRecues); // on stocke les donnees recues
+        $(".modal-body").empty(); // on vide la modale
+        $(".modal-title").html('Modification quantite ' + name + ' ' + marque + ' ' + reference);
+        $(".modal-body").append("<table id='decli'class='table table-striped table-bordered' style='width:100%'><thead><th>"+["ID"]+"</th><th>"+["Couleur"]+"</th><th>"+["Bonnet"]+"</th><th>"+["Taille"]+"</th><th>"+["Quantite"]+"</th><th>"+["ID-Produit"]+"</th><th></th><tbody>"); // on creer les differentes colonnes et leur nom
+        // Parcourt tableau, accede à id
+        for (var i = 0; i < tableDonneesRecues.length; i++) {
+                      if(tableDonneesRecues[i]["bonnet"] !== ""){ // s'il y a quelque chose dans bonnet on affiche toutes les valeurs
+                        $("#decli").append("<tr><td>"+tableDonneesRecues[i]["id"]+"</td><td>"+tableDonneesRecues[i]["couleur"]+"</td><td>" + tableDonneesRecues[i]["bonnet"] + "</td><td>"+tableDonneesRecues[i]["taille"]+"</td><td><input id='caseQuantite' type='number' value="+tableDonneesRecues[i]["quantite"]+"></td><td>"+tableDonneesRecues[i]["id_produit"]+"</td><td><input type='submit' value='Actualiser'></td></tr>");
+                      }else{ // s'il n'y a rien dans bonnet on affiche tout ormis la colonne bonnet
+                        $("#decli").append("<tr><td>"+tableDonneesRecues[i]["id"]+"</td><td>"+tableDonneesRecues[i]["couleur"]+"</td><td>NA</td><td>"+tableDonneesRecues[i]["taille"]+"</td><td><input id='caseQuantite' type='number' value="+tableDonneesRecues[i]["quantite"]+"></td><td>"+tableDonneesRecues[i]["id_produit"]+"</td><td><input type='submit' value='Actualiser'></td></tr>");
+                      }
+        }
+        $(".modal-body").append("</tbody></table>"); // on ferme les balises du tableau
+        $('#decli').DataTable(); // on ajoute dataTables dans le tableau des declinaisons
       }
-      $(".modal-body").append("</tbody></table>"); // on ferme les balises du tableau
-      $('#decli').DataTable(); // on ajoute dataTables dans le tableau des declinaisons
-    }
-  })
-}
-</script>
+    })
+  }
+  </script>
 
-<!-- Creation de la modale -->
-<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" id="modalDialog" role="document">
-    <div class="modal-content" id="modalContent">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Détails</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-      </div>
+  <!-- Creation de la modale -->
+  <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" id="modalDialog" role="document">
+      <div class="modal-content" id="modalContent">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Détails</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+        </div>
 
-      <!-- Bouton fermer en bas de la modale -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <!-- Bouton fermer en bas de la modale -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-    <!-- Fonction réalisant le tableau des produits (dataTables) -->
-    <script type="text/javascript">
-        $(document).ready(function($) {
-            $('#produits').DataTable();
-        } );
-    </script>
+  <!-- Fonction réalisant le tableau des produits (dataTables) -->
+  <script type="text/javascript">
+      $(document).ready(function($) {
+          $('#produits').DataTable();
+      } );
+  </script>
 
   </body>
 </html>

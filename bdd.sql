@@ -10,3 +10,11 @@ INSERT INTO `declinaisons`(`id`, `couleur`, `bonnet`, `taille`, `quantite`, `id_
 
 
 INSERT INTO `declinaisons`(`id`, `couleur`, `bonnet`, `taille`, `quantite`, `id_produit`) VALUES(20, 'vert', 'b', 100, 7, 4), (21, 'rouge', 'a', 105, 2, 4), (22, 'rouge', 'e', 95, 16, 4);
+
+<?
+$bdd = new PDO('mysql: host=localhost;dbname=stage_ld;charset=utf', 'root', '')
+$rep = $bdd->query("SELECT COUNT quantite FROM declinaisons WHERE id_produit= '".$_POST['id']."'")
+?>
+
+<?
+UPDATE quantite SET $_POST['qte']
