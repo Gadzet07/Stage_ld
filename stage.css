@@ -18,20 +18,6 @@ width: 50%;
   padding:2px 0 2px 0;
 }
 
-#voir {
-  border: none;
-  background-color: #808080;
-  border-radius: 8px;
-  padding:2px 0 2px 0;
-}
-
-#modifier {
-  border: none;
-  background-color: #DAA520;
-  border-radius: 8px;
-  padding:2px 0 2px 0;
-}
-
 #supprimer {
   border: none;
   background-color: #FF0000;
@@ -40,9 +26,11 @@ width: 50%;
 }
 
 #caseQuantite{
-  width: 60px;
+  width: auto;
 }
 
-#modal-body{
+#modalContent{
+  margin-left: 20em;
+  margin-right: 20em;
   width: auto;
 }

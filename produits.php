@@ -6,7 +6,6 @@
     <link href="./stage.css" rel="stylesheet">
     <link href="./css/bootstrap.css" rel="stylesheet">
     <link rel="icon" href="./autres/test.jpg">
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.css">
     <link href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
     <script src="  https://code.jquery.com/jquery-3.3.1.js"></script>
@@ -115,15 +114,15 @@ function appelAjax(id, name, marque, reference){
     data:"id=" + id, // on envoie l'id
     success: function(donnesRecues) { //si cela fonctionne
       tableDonneesRecues = JSON.parse(donnesRecues); // on stocke les donnees recues
-      $(".modal-body").empty(); // on nettoie la modale
+      $(".modal-body").empty(); // on vide la modale
       $(".modal-title").html('Modification quantite ' + name + ' ' + marque + ' ' + reference);
       $(".modal-body").append("<table id='decli'class='table table-striped table-bordered' style='width:100%'><thead><th>"+["ID"]+"</th><th>"+["Couleur"]+"</th><th>"+["Bonnet"]+"</th><th>"+["Taille"]+"</th><th>"+["Quantite"]+"</th><th>"+["ID-Produit"]+"</th><th></th><tbody>"); // on creer les differentes colonnes et leur nom
       // Parcourt tableau, accede à id
       for (var i = 0; i < tableDonneesRecues.length; i++) {
                     if(tableDonneesRecues[i]["bonnet"] !== ""){ // s'il y a quelque chose dans bonnet on affiche toutes les valeurs
-                      $("#decli").append("<tr><td>"+tableDonneesRecues[i]["id"]+"</td><td>"+tableDonneesRecues[i]["couleur"]+"</td><td>" + tableDonneesRecues[i]["bonnet"] + "</td><td>"+tableDonneesRecues[i]["taille"]+"</td><td><input id='caseQuantite' type='number' value="+tableDonneesRecues[i]["quantite"]+"></td><td>"+tableDonneesRecues[i]["id_produit"]+"</td><td><input type='submit' value='test'></td></tr>");
+                      $("#decli").append("<tr><td>"+tableDonneesRecues[i]["id"]+"</td><td>"+tableDonneesRecues[i]["couleur"]+"</td><td>" + tableDonneesRecues[i]["bonnet"] + "</td><td>"+tableDonneesRecues[i]["taille"]+"</td><td><input id='caseQuantite' type='number' value="+tableDonneesRecues[i]["quantite"]+"></td><td>"+tableDonneesRecues[i]["id_produit"]+"</td><td><input type='submit' value='Actualiser'></td></tr>");
                     }else{ // s'il n'y a rien dans bonnet on affiche tout ormis la colonne bonnet
-                      $("#decli").append("<tr><td>"+tableDonneesRecues[i]["id"]+"</td><td>"+tableDonneesRecues[i]["couleur"]+"</td><td>NA</td><td>"+tableDonneesRecues[i]["taille"]+"</td><td><input id='caseQuantite' type='number' value="+tableDonneesRecues[i]["quantite"]+"></td><td>"+tableDonneesRecues[i]["id_produit"]+"</td><td><input type='submit' value='test'></td></tr>");
+                      $("#decli").append("<tr><td>"+tableDonneesRecues[i]["id"]+"</td><td>"+tableDonneesRecues[i]["couleur"]+"</td><td>NA</td><td>"+tableDonneesRecues[i]["taille"]+"</td><td><input id='caseQuantite' type='number' value="+tableDonneesRecues[i]["quantite"]+"></td><td>"+tableDonneesRecues[i]["id_produit"]+"</td><td><input type='submit' value='Actualiser'></td></tr>");
                     }
       }
       $(".modal-body").append("</tbody></table>"); // on ferme les balises du tableau
@@ -135,8 +134,8 @@ function appelAjax(id, name, marque, reference){
 
 <!-- Creation de la modale -->
 <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
+  <div class="modal-dialog" id="modalDialog" role="document">
+    <div class="modal-content" id="modalContent">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">Détails</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">

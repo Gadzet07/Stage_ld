@@ -5347,7 +5347,7 @@ button.close {
   transform: translate(0, 0);
 }
 
-.modal-dialog-centered {
+.-centered {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-align: center;
@@ -5447,7 +5447,6 @@ button.close {
 
 @media (min-width: 576px) {
   .modal-dialog {
-    max-width: 500px;
     margin: 1.75rem auto;
   }
   .modal-dialog-centered {
