@@ -118,16 +118,26 @@
         $(".modal-body").empty(); // on vide la modale
         $(".modal-title").html('Modification quantite ' + name + ' ' + marque + ' ' + reference);
         $(".modal-body").append("<table id='decli'class='table table-striped table-bordered' style='width:100%'><thead><th>"+["ID"]+"</th><th>"+["Couleur"]+"</th><th>"+["Bonnet"]+"</th><th>"+["Taille"]+"</th><th>"+["Quantite"]+"</th><th>"+["ID-Produit"]+"</th><th></th><tbody>"); // on creer les differentes colonnes et leur nom
+        numCaseQuantite = 0;
         // Parcourt tableau, accede à id
         for (var i = 0; i < tableDonneesRecues.length; i++) {
                       if(tableDonneesRecues[i]["bonnet"] !== ""){ // s'il y a quelque chose dans bonnet on affiche toutes les valeurs
-                        $("#decli").append("<tr><td>"+tableDonneesRecues[i]["id"]+"</td><td>"+tableDonneesRecues[i]["couleur"]+"</td><td>" + tableDonneesRecues[i]["bonnet"] + "</td><td>"+tableDonneesRecues[i]["taille"]+"</td><td><input id='caseQuantite' type='number' value="+tableDonneesRecues[i]["quantite"]+"></td><td>"+tableDonneesRecues[i]["id_produit"]+"</td><td><input type='submit' value='Actualiser'></td></tr>");
+                        $("#decli").append("<tr><td>"+tableDonneesRecues[i]["id"]+"</td><td>"+tableDonneesRecues[i]["couleur"]+"</td><td>" + tableDonneesRecues[i]["bonnet"] + "</td><td>"+tableDonneesRecues[i]["taille"]+"</td><td><input id='caseQuantite"+numCaseQuantite+"' type='number' value="+tableDonneesRecues[i]["quantite"]+"></td><td>"+tableDonneesRecues[i]["id_produit"]+"</td><td><input type='submit' value='Actualiser'></td></tr>");
+                        qte=document.getElementById("caseQuantite"+numCaseQuantite+"").value;
+                        console.log(qte);
+                        numCaseQuantite=numCaseQuantite+1;
+                        console.log(numCaseQuantite);
                       }else{ // s'il n'y a rien dans bonnet on affiche tout ormis la colonne bonnet
-                        $("#decli").append("<tr><td>"+tableDonneesRecues[i]["id"]+"</td><td>"+tableDonneesRecues[i]["couleur"]+"</td><td>NA</td><td>"+tableDonneesRecues[i]["taille"]+"</td><td><input id='caseQuantite' type='number' value="+tableDonneesRecues[i]["quantite"]+"></td><td>"+tableDonneesRecues[i]["id_produit"]+"</td><td><input type='submit' value='Actualiser'></td></tr>");
+                        $("#decli").append("<tr><td>"+tableDonneesRecues[i]["id"]+"</td><td>"+tableDonneesRecues[i]["couleur"]+"</td><td>NA</td><td>"+tableDonneesRecues[i]["taille"]+"</td><td><input id='caseQuantite"+numCaseQuantite+"' type='number' value="+tableDonneesRecues[i]["quantite"]+"></td><td>"+tableDonneesRecues[i]["id_produit"]+"</td><td><input type='submit' value='Actualiser'></td></tr>");
+                        qte=document.getElementById("caseQuantite"+numCaseQuantite+"").value;
+                        console.log(qte);
+                        numCaseQuantite=numCaseQuantite+1;
+                        console.log(numCaseQuantite);
                       }
         }
         $(".modal-body").append("</tbody></table>"); // on ferme les balises du tableau
         $('#decli').DataTable(); // on ajoute dataTables dans le tableau des declinaisons
+
       }
     })
   }
