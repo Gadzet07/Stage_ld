@@ -103,7 +103,7 @@
                     </td>
                       <!-- Bouton qui affiche une modale avec les déclinaisons du produit séléctionné -->
                     <td>
-                        <button onclick="modaleQuantite(<?php echo $value['id'];?>,'<?php echo $value['nom'];?>','<?php echo $value['marque'];?>','<?php echo $value['reference'];?>')" class="btn btn-success" data-toggle="modal" data-target="#exampleModalLong">
+                        <button onclick="modaleQuantite(<?php echo $value['id'];?>,'<?php echo $value['nom'];?>','<?php echo $value['marque'];?>','<?php echo $value['reference'];?>')" class="btn btn-success" data-toggle="modal" data-target="#Modal">
                           Afficher
                         </button>
                     </td>
@@ -164,12 +164,12 @@
   </script>
 
   <!-- Creation de la modale -->
-  <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+  <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle" aria-hidden="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog" id="modalDialog" role="document">
       <div class="modal-content" id="modalContent">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle">Détails</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <h5 class="modal-title" id="ModalTitle">Détails</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="location.reload();"> <!-- Un clic sur le bouton fermer recharge la page "Produits"-->
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -189,6 +189,19 @@
       $(document).ready(function($) {
           $('#produits').DataTable();
       } );
+
+//////////////////////// Selection des lignes et compteurs de lignes selectionnees ----- Peut etre utile pour la suppression ////////////////////////
+//       $(document).ready(function() {
+//     var table = $('#produits').DataTable();
+//
+//     $('#produits tbody').on( 'click', 'tr', function () {
+//         $(this).toggleClass('selected');
+//     } );
+//
+//     $('#button').click( function () {
+//         alert( table.rows('.selected').data().length +' row(s) selected' );
+//     } );
+// } );
   </script>
 
   </body>
