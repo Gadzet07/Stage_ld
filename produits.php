@@ -60,8 +60,8 @@
         <p class="lead">C'est le résultat de mon boulot pendant la durée de stage.</p>
       </div>
 
-        <input type="button" id="ajouter" value="Ajouter">
-        <input type="button" id="supprimer" value="Supprimer">
+        <input type="button" id="ajouter" value="Ajouter" onclick="modaleAjouterProduit()">
+        <input type="button" id="supprimer" value="Supprimer" onclick="modaleAjouterDeclinaison()">
 
         <!-- Connection à la base de donnée -->
         <?php
@@ -92,8 +92,16 @@
                     <td><?php echo $value['nom']; ?></td>
                     <td><?php echo $value['marque']; ?></td>
                     <td><?php echo $value['reference']; ?></td>
-                    <td><?php echo $value['quantite']; ?></td>
-                    <!-- Bouton qui affiche une modale avec les déclinaisons du produit séléctionné -->
+                    <td><?php $query=("SELECT SUM(quantite) FROM declinaisons WHERE id_produit= '".$value['id']."'"); // On recupere la somme des quantite de toutes les declinaisons
+                      $result = $bdd->query($query);
+                      $quantite =$result->fetch();
+                      if ($quantite[0] > 0) // On verifie s'il y a du stock
+                        echo $quantite[0]; // On l'affiche s'il y en a
+                        else
+                        echo "Stock vide!"; // Sinon on affiche "Stock vide!"
+                        ?>
+                    </td>
+                      <!-- Bouton qui affiche une modale avec les déclinaisons du produit séléctionné -->
                     <td>
                         <button onclick="modaleQuantite(<?php echo $value['id'];?>,'<?php echo $value['nom'];?>','<?php echo $value['marque'];?>','<?php echo $value['reference'];?>')" class="btn btn-success" data-toggle="modal" data-target="#exampleModalLong">
                           Afficher
@@ -148,7 +156,6 @@
       url:"changeQte.php",
       data:{'id': id, 'qt': qt},
       success: function(data){
-
       }
     })
 
@@ -157,7 +164,7 @@
   </script>
 
   <!-- Creation de la modale -->
-  <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog" id="modalDialog" role="document">
       <div class="modal-content" id="modalContent">
         <div class="modal-header">
