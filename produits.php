@@ -110,8 +110,8 @@
   <script type="text/javascript">
   function modaleQuantite(id, name, marque, reference){
     $.ajax({
-      type:"POST", // on envoie des données
-      url:"detailsV2.php", // on envoie au fichier detailsV2.php
+      type:"POST", // type de transfert
+      url:"detailsV2.php", // on transfert au fichier detailsV2.php
       data:"id=" + id, // on envoie l'id
       success: function(donnesRecues) { //si cela fonctionne
         tableDonneesRecues = JSON.parse(donnesRecues); // on stocke les donnees recues
@@ -122,25 +122,38 @@
         // Parcourt tableau, accede à id
         for (var i = 0; i < tableDonneesRecues.length; i++) {
                       if(tableDonneesRecues[i]["bonnet"] !== ""){ // s'il y a quelque chose dans bonnet on affiche toutes les valeurs
-                        $("#decli").append("<tr><td>"+tableDonneesRecues[i]["id"]+"</td><td>"+tableDonneesRecues[i]["couleur"]+"</td><td>" + tableDonneesRecues[i]["bonnet"] + "</td><td>"+tableDonneesRecues[i]["taille"]+"</td><td><input id='caseQuantite"+numCaseQuantite+"' type='number' value="+tableDonneesRecues[i]["quantite"]+"></td><td>"+tableDonneesRecues[i]["id_produit"]+"</td><td><input type='submit' value='Actualiser'></td></tr>");
-                        qte=document.getElementById("caseQuantite"+numCaseQuantite+"").value;
-                        console.log(qte);
-                        numCaseQuantite=numCaseQuantite+1;
-                        console.log(numCaseQuantite);
+                        $("#decli").append("<tr><td>"+tableDonneesRecues[i]["id"]+"</td><td>"+tableDonneesRecues[i]["couleur"]+"</td><td>" + tableDonneesRecues[i]["bonnet"] + "</td><td>"+tableDonneesRecues[i]["taille"]+"</td><td><input id='quantiteProduit"+numCaseQuantite+"' type='number' value='"+tableDonneesRecues[i]["quantite"]+"'></td><td>"+tableDonneesRecues[i]["id_produit"]+"</td><td><button onClick='reloadQte("+tableDonneesRecues[i]["id"]+", "+numCaseQuantite+")' >Actualiser</button></td></tr>");
+                        qte=document.getElementById("quantiteProduit"+numCaseQuantite+"").value;
+                        // console.log(qte);
+                        // console.log(numCaseQuantite);
+                        numCaseQuantite++;
                       }else{ // s'il n'y a rien dans bonnet on affiche tout ormis la colonne bonnet
-                        $("#decli").append("<tr><td>"+tableDonneesRecues[i]["id"]+"</td><td>"+tableDonneesRecues[i]["couleur"]+"</td><td>NA</td><td>"+tableDonneesRecues[i]["taille"]+"</td><td><input id='caseQuantite"+numCaseQuantite+"' type='number' value="+tableDonneesRecues[i]["quantite"]+"></td><td>"+tableDonneesRecues[i]["id_produit"]+"</td><td><input type='submit' value='Actualiser'></td></tr>");
-                        qte=document.getElementById("caseQuantite"+numCaseQuantite+"").value;
-                        console.log(qte);
-                        numCaseQuantite=numCaseQuantite+1;
-                        console.log(numCaseQuantite);
+                        $("#decli").append("<tr><td>"+tableDonneesRecues[i]["id"]+"</td><td>"+tableDonneesRecues[i]["couleur"]+"</td><td>NA</td><td>"+tableDonneesRecues[i]["taille"]+"</td><td><input id='quantiteProduit"+numCaseQuantite+"' type='number' value="+tableDonneesRecues[i]["quantite"]+"></td><td>"+tableDonneesRecues[i]["id_produit"]+"</td><td><button onClick='reloadQte("+tableDonneesRecues[i]["id"]+", "+numCaseQuantite+")'>Actualiser</button></td></tr>");
+                        qte=document.getElementById("quantiteProduit"+numCaseQuantite+"").value;
+                        //console.log(qte);
+                        numCaseQuantite++;
+                        //console.log(numCaseQuantite);
                       }
         }
         $(".modal-body").append("</tbody></table>"); // on ferme les balises du tableau
         $('#decli').DataTable(); // on ajoute dataTables dans le tableau des declinaisons
-
       }
     })
   }
+
+  function reloadQte(id, numCaseQuantite,qt){
+    qt=document.getElementById("quantiteProduit"+numCaseQuantite+"").value;
+    $.ajax({
+      type:"POST",
+      url:"changeQte.php",
+      data:{'id': id, 'qt': qt},
+      success: function(data){
+
+      }
+    })
+
+  }
+
   </script>
 
   <!-- Creation de la modale -->
