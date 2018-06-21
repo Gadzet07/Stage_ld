@@ -11,20 +11,6 @@ border: medium solid #C0C0C0;
 width: 50%;
 }
 
-#ajouter{
-  border: none;
-  background-color: #00FF00;
-  border-radius: 8px;
-  padding:2px 0 2px 0;
-}
-
-#supprimer {
-  border: none;
-  background-color: #FF0000;
-  border-radius: 8px;
-  padding:2px 0 2px 0;
-}
-
 #caseQuantite{
   width: auto;
 }

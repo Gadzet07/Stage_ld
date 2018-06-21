@@ -60,8 +60,8 @@
         <p class="lead">C'est le résultat de mon boulot pendant la durée de stage.</p>
       </div>
 
-        <input type="button" id="ajouter" value="Ajouter" onclick="modaleAjouterProduit()">
-        <input type="button" id="supprimer" value="Supprimer" onclick="modaleAjouterDeclinaison()">
+        <input type="button" id="ajouter" value="Ajouter" class="btn btn-success" data-toggle="modal" data-target="#modal" onclick="modaleAjouterProduit()">
+        <input type="button" id="supprimer" value="Supprimer" class="btn btn-danger">
 
         <!-- Connection à la base de donnée -->
         <?php
@@ -92,7 +92,7 @@
                     <td><?php echo $value['nom']; ?></td>
                     <td><?php echo $value['marque']; ?></td>
                     <td><?php echo $value['reference']; ?></td>
-                    <td><?php $query=("SELECT SUM(quantite) FROM declinaisons WHERE id_produit= '".$value['id']."'"); // On recupere la somme des quantite de toutes les declinaisons
+                    <td><?php $query=("SELECT SUM(quantite) FROM declinaisons WHERE id_produit= '".$value['id']."'"); // On recupere la somme des quantites de toutes les declinaisons
                       $result = $bdd->query($query);
                       $quantite =$result->fetch();
                       if ($quantite[0] > 0) // On verifie s'il y a du stock
@@ -103,7 +103,7 @@
                     </td>
                       <!-- Bouton qui affiche une modale avec les déclinaisons du produit séléctionné -->
                     <td>
-                        <button onclick="modaleQuantite(<?php echo $value['id'];?>,'<?php echo $value['nom'];?>','<?php echo $value['marque'];?>','<?php echo $value['reference'];?>')" class="btn btn-success" data-toggle="modal" data-target="#Modal">
+                        <button onclick="modaleQuantite(<?php echo $value['id'];?>,'<?php echo $value['nom'];?>','<?php echo $value['marque'];?>','<?php echo $value['reference'];?>')" class="btn btn-success" data-toggle="modal" data-target="#modal">
                           Afficher
                         </button>
                     </td>
@@ -148,14 +148,35 @@
       }
     })
   }
-
-  function reloadQte(id, numCaseQuantite,qt){
-    qt=document.getElementById("quantiteProduit"+numCaseQuantite+"").value;
+  // Fonction qui permet le changement d'une quantite d'une declinaison
+  function reloadQte(id, numCaseQuantite,qte){
+    qte=document.getElementById("quantiteProduit"+numCaseQuantite+"").value;
     $.ajax({
       type:"POST",
-      url:"changeQte.php",
-      data:{'id': id, 'qt': qt},
+      url:"changerQte.php",
+      data:{'id': id, 'qte': qte},
       success: function(data){
+      }
+    })
+
+  }
+
+  function modaleAjouterProduit(){
+    $(".modal-title").html("Ajouter un produit");
+    $(".modal-body").html("<p>Nom du produit:<input type='text' id='nomProduit' required></p><p>Marque du produit:<input type='text' id='marqueProduit' required></p><p>Reference du produit:<input type='text' id='referenceProduit' autocomplete='off' required></p><button onClick='ajaxAjouterProduit()'>Ajouter</button>");
+    }
+
+  function ajaxAjouterProduit(nomProduit=document.getElementById('nomProduit').value, marqueProduit=document.getElementById('marqueProduit').value, referenceProduit=document.getElementById('referenceProduit').value){
+    // console.log(idProduit);
+    // console.log(nomProduit);
+    // console.log(marqueProduit);
+    // console.log(referenceProduit);
+    $.ajax({
+      type:"POST",
+      url:"ajouterProduit.php",
+      data:{'nomProduit': nomProduit, 'marqueProduit': marqueProduit, 'referenceProduit': referenceProduit},
+      success: function(data){
+        console.log(data);
       }
     })
 
@@ -164,11 +185,11 @@
   </script>
 
   <!-- Creation de la modale -->
-  <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+  <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true" data-backdrop="static"> <!-- data-keyboard="false" -->
     <div class="modal-dialog" id="modalDialog" role="document">
       <div class="modal-content" id="modalContent">
         <div class="modal-header">
-          <h5 class="modal-title" id="ModalTitle">Détails</h5>
+          <h5 class="modal-title" id="modalTitle"></h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="location.reload();"> <!-- Un clic sur le bouton fermer recharge la page "Produits"-->
             <span aria-hidden="true">&times;</span>
           </button>
@@ -178,7 +199,7 @@
 
         <!-- Bouton fermer en bas de la modale -->
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="location.reload();">Close</button>
         </div>
       </div>
     </div>
