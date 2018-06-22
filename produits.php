@@ -8,10 +8,13 @@
     <link rel="icon" href="./autres/test.jpg">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.css">
     <link href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
+    <!-- <link href="https://cdn.datatables.net/1.10.18/css/jquery.dataTables.min.css"> -->
     <script src="  https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="./js/bootstrap.js"> </script>
     <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+    <!-- <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script> -->
 
     <title>Produits</title>
 
@@ -61,7 +64,7 @@
       </div>
 
         <input type="button" id="ajouter" value="Ajouter" class="btn btn-success" data-toggle="modal" data-target="#modal" onclick="modaleAjouterProduit()">
-        <input type="button" id="supprimer" value="Supprimer" class="btn btn-danger">
+        <input type="button" id="supprimer" value="Supprimer" class="btn btn-danger" onclick="supprimerProduit()">
 
         <!-- Connection à la base de donnée -->
         <?php
@@ -124,32 +127,36 @@
       success: function(donnesRecues) { //si cela fonctionne
         tableDonneesRecues = JSON.parse(donnesRecues); // on stocke les donnees recues
         $(".modal-body").empty(); // on vide la modale
-        $(".modal-title").html('Modification quantite ' + name + ' ' + marque + ' ' + reference);
-        $(".modal-body").append("<table id='decli'class='table table-striped table-bordered' style='width:100%'><thead><th>"+["ID"]+"</th><th>"+["Couleur"]+"</th><th>"+["Bonnet"]+"</th><th>"+["Taille"]+"</th><th>"+["Quantite"]+"</th><th>"+["ID-Produit"]+"</th><th></th><tbody>"); // on creer les differentes colonnes et leur nom
+        $(".modal-body").html("<div id='formDeclinaison' style='display:none'><p>Couleur de la declinaison:<input type='text' id='couleurDecli' required></p><p>Bonnet de la declinaison:<input type='text' id='bonnetDecli'></p><p>Taille de la declinaison:<input type='varchar' id='tailleDecli' autocomplete='off' required></p><p>Quantite de la declinaison:<input type='int' id='quantiteDecli'</p><p><button onClick='ajaxAjouterDeclinaison()'>Ajouter</button></p></div>")
+        $(".modal-title").html("Modification quantite " + name + " " + marque + " " + reference + "<input type='hidden' id='idProduit' value='" + id + "'>");
+        // $(".modal-title").append("<input type="hidden" value="id"");
+        $(".modal-body").append("<p><input type='button' id='ajouterDecli' value='Ajouter' class='btn btn-success'></p><table id='decli'class='table table-striped table-bordered' style='width:100%'><thead><th>"+["ID"]+"</th><th>"+["Couleur"]+"</th><th>"+["Bonnet"]+"</th><th>"+["Taille"]+"</th><th>"+["Quantite"]+"</th><th>"+["ID-Produit"]+"</th><th></th><tbody>"); // on creer les differentes colonnes et leur nom
         numCaseQuantite = 0;
         // Parcourt tableau, accede à id
         for (var i = 0; i < tableDonneesRecues.length; i++) {
                       if(tableDonneesRecues[i]["bonnet"] !== ""){ // s'il y a quelque chose dans bonnet on affiche toutes les valeurs
-                        $("#decli").append("<tr><td>"+tableDonneesRecues[i]["id"]+"</td><td>"+tableDonneesRecues[i]["couleur"]+"</td><td>" + tableDonneesRecues[i]["bonnet"] + "</td><td>"+tableDonneesRecues[i]["taille"]+"</td><td><input id='quantiteProduit"+numCaseQuantite+"' type='number' value='"+tableDonneesRecues[i]["quantite"]+"'></td><td>"+tableDonneesRecues[i]["id_produit"]+"</td><td><button onClick='reloadQte("+tableDonneesRecues[i]["id"]+", "+numCaseQuantite+")' >Actualiser</button></td></tr>");
-                        qte=document.getElementById("quantiteProduit"+numCaseQuantite+"").value;
-                        // console.log(qte);
-                        // console.log(numCaseQuantite);
+                        $("#decli").append("<tr><td>" +tableDonneesRecues[i]["id"]+ "</td><td>" +tableDonneesRecues[i]["couleur"]+ "</td><td>" +tableDonneesRecues[i]["bonnet"]+ "</td><td>" +tableDonneesRecues[i]["taille"]+ "</td><td><input id='quantiteProduit" +numCaseQuantite+ "' type='number' value=" +tableDonneesRecues[i]["quantite"]+ "></td><td>" +tableDonneesRecues[i]["id_produit"]+ "</td><td><button onClick='reloadQte(" +tableDonneesRecues[i]["id"]+ ", " +numCaseQuantite+ ")'>Actualiser</button></td></tr>");
+                        qte=document.getElementById("quantiteProduit" +numCaseQuantite+ "").value;
                         numCaseQuantite++;
                       }else{ // s'il n'y a rien dans bonnet on affiche tout ormis la colonne bonnet
-                        $("#decli").append("<tr><td>"+tableDonneesRecues[i]["id"]+"</td><td>"+tableDonneesRecues[i]["couleur"]+"</td><td>NA</td><td>"+tableDonneesRecues[i]["taille"]+"</td><td><input id='quantiteProduit"+numCaseQuantite+"' type='number' value="+tableDonneesRecues[i]["quantite"]+"></td><td>"+tableDonneesRecues[i]["id_produit"]+"</td><td><button onClick='reloadQte("+tableDonneesRecues[i]["id"]+", "+numCaseQuantite+")'>Actualiser</button></td></tr>");
-                        qte=document.getElementById("quantiteProduit"+numCaseQuantite+"").value;
-                        //console.log(qte);
+                        $("#decli").append("<tr><td>" +tableDonneesRecues[i]["id"]+ "</td><td>" +tableDonneesRecues[i]["couleur"]+ "</td><td>NA</td><td>" +tableDonneesRecues[i]["taille"]+ "</td><td><input id='quantiteProduit" +numCaseQuantite+ "' type='number' value=" +tableDonneesRecues[i]["quantite"]+ "></td><td>" +tableDonneesRecues[i]["id_produit"]+"</td><td><button onClick='reloadQte(" +tableDonneesRecues[i]["id"]+ ", " +numCaseQuantite+ ")'>Actualiser</button></td></tr>");
+                        qte=document.getElementById("quantiteProduit" +numCaseQuantite+ "").value;
                         numCaseQuantite++;
-                        //console.log(numCaseQuantite);
                       }
         }
         $(".modal-body").append("</tbody></table>"); // on ferme les balises du tableau
         $('#decli').DataTable(); // on ajoute dataTables dans le tableau des declinaisons
       }
     })
+    // Permet l'affichage ou non du formulaire d'ajout de declinaison
+    $(document).ready(function(){
+      $("#ajouterDecli").click(function(){
+          $("#formDeclinaison").toggle();
+      });
+    });
   }
   // Fonction qui permet le changement d'une quantite d'une declinaison
-  function reloadQte(id, numCaseQuantite,qte){
+  function reloadQte(id, numCaseQuantite){
     qte=document.getElementById("quantiteProduit"+numCaseQuantite+"").value;
     $.ajax({
       type:"POST",
@@ -160,26 +167,52 @@
     })
 
   }
-
+  ////////////////////////////// Gestion Produits //////////////////////////////
+  // Creation d'un formulaire dans une modale pour ajouter un produit
   function modaleAjouterProduit(){
     $(".modal-title").html("Ajouter un produit");
-    $(".modal-body").html("<p>Nom du produit:<input type='text' id='nomProduit' required></p><p>Marque du produit:<input type='text' id='marqueProduit' required></p><p>Reference du produit:<input type='text' id='referenceProduit' autocomplete='off' required></p><button onClick='ajaxAjouterProduit()'>Ajouter</button>");
+    $(".modal-body").empty();
+    $(".modal-body").append("<p>Nom du produit:<input type='text' id='nomProduit' required></p>");
+    $(".modal-body").append("<p>Marque du produit:<input type='text' id='marqueProduit' required></p>");
+    $(".modal-body").append("<p>Reference du produit:<input type='text' id='referenceProduit' autocomplete='off' required></p>");
+    $(".modal-body").append("<button onClick='ajaxAjouterProduit()'>Ajouter</button>");
     }
 
-  function ajaxAjouterProduit(nomProduit=document.getElementById('nomProduit').value, marqueProduit=document.getElementById('marqueProduit').value, referenceProduit=document.getElementById('referenceProduit').value){
-    // console.log(idProduit);
-    // console.log(nomProduit);
-    // console.log(marqueProduit);
-    // console.log(referenceProduit);
+  // Fonction qui ajoute le produit cree dans le formulaire a la base de donnees
+  function ajaxAjouterProduit(){
+    nomProduit=document.getElementById('nomProduit').value
+    marqueProduit=document.getElementById('marqueProduit').value
+    referenceProduit=document.getElementById('referenceProduit').value
     $.ajax({
       type:"POST",
       url:"ajouterProduit.php",
       data:{'nomProduit': nomProduit, 'marqueProduit': marqueProduit, 'referenceProduit': referenceProduit},
       success: function(data){
-        console.log(data);
+        alert("Produit ajouté avec succès!");
       }
     })
+  }
 
+  // Fonction qui permet la suppression d'un ou plusieurs produits
+  function supprimerProduit(){
+  }
+
+  ////////////////////////////// Gestion Declinaisons //////////////////////////////
+  // Fonction qui ajoute la declinaison creee dans le formulaire a la base de donnees
+  function ajaxAjouterDeclinaison(){
+    couleurDecli=document.getElementById('couleurDecli').value;
+    bonnetDecli=document.getElementById('bonnetDecli').value;
+    tailleDecli=document.getElementById('tailleDecli').value;
+    quantiteDecli=document.getElementById('quantiteDecli').value;
+    idProduit=document.getElementById('idProduit').value;
+    $.ajax({
+      type:"POST",
+      url:"ajouterDeclinaison.php",
+      data:{'couleurDecli': couleurDecli, 'bonnetDecli': bonnetDecli, 'tailleDecli': tailleDecli, 'quantiteDecli': quantiteDecli, 'idProduit': idProduit},
+      success: function(data){
+        alert("Déclinaison ajoutée avec succès!");
+      }
+    })
   }
 
   </script>
