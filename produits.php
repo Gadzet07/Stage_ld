@@ -55,12 +55,31 @@
       </div>
     </nav>
 
-    <!-- < ?php require "detailsV2.php"; ?> -->
-
     <main role="main" class="container">
       <div class="starter-template">
         <h1>Mon stage</h1>
         <p class="lead">C'est le résultat de mon boulot pendant la durée de stage.</p>
+      </div>
+
+      <!-- Creation de la modale -->
+      <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true" data-backdrop="static"> <!-- data-keyboard="false" -->
+        <div class="modal-dialog" id="modalDialog" role="document">
+          <div class="modal-content" id="modalContent">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalTitle"></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="location.reload();"> <!-- Un clic sur le bouton fermer recharge la page "Produits"-->
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+            </div>
+
+            <!-- Bouton fermer en bas de la modale -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="location.reload();">Close</button>
+            </div>
+          </div>
+        </div>
       </div>
 
         <input type="button" id="ajouter" value="Ajouter" class="btn btn-success" data-toggle="modal" data-target="#modal" onclick="modaleAjouterProduit()">
@@ -126,11 +145,12 @@
       data:"id=" + id, // on envoie l'id
       success: function(donnesRecues) { //si cela fonctionne
         tableDonneesRecues = JSON.parse(donnesRecues); // on stocke les donnees recues
-        $(".modal-body").empty(); // on vide la modale
-        $(".modal-body").html("<div id='formDeclinaison' style='display:none'><p>Couleur de la declinaison:<input type='text' id='couleurDecli' required></p><p>Bonnet de la declinaison:<input type='text' id='bonnetDecli'></p><p>Taille de la declinaison:<input type='varchar' id='tailleDecli' autocomplete='off' required></p><p>Quantite de la declinaison:<input type='int' id='quantiteDecli'</p><p><button onClick='ajaxAjouterDeclinaison()'>Ajouter</button></p></div>")
         $(".modal-title").html("Modification quantite " + name + " " + marque + " " + reference + "<input type='hidden' id='idProduit' value='" + id + "'>");
-        // $(".modal-title").append("<input type="hidden" value="id"");
-        $(".modal-body").append("<p><input type='button' id='ajouterDecli' value='Ajouter' class='btn btn-success'></p><table id='decli'class='table table-striped table-bordered' style='width:100%'><thead><th>"+["ID"]+"</th><th>"+["Couleur"]+"</th><th>"+["Bonnet"]+"</th><th>"+["Taille"]+"</th><th>"+["Quantite"]+"</th><th>"+["ID-Produit"]+"</th><th></th><tbody>"); // on creer les differentes colonnes et leur nom
+        $(".modal-body").empty(); // on vide la modale
+        $(".modal-body").html("<div id='ajouterDecliDiv'><p><input type='button' id='ajouterDecli' value='Ajouter' class='btn btn-success'></p></div>"); // bouton pour afficher le formulaire d'ajout de declinaison
+        $(".modal-body").append("<div id='formDeclinaison' style='display:none'><p>Couleur de la declinaison:<input type='text' id='couleurDecli' required></p><p>Bonnet de la declinaison:<input type='text' id='bonnetDecli'></p><p>Taille de la declinaison:<input type='varchar' id='tailleDecli' autocomplete='off' required></p><p>Quantite de la declinaison:<input type='int' id='quantiteDecli'</p><p><button onClick='ajaxAjouterDeclinaison()'>Ajouter</button></p></div>");
+        //$(".modal-body").append("<input type='button' id='boutonSupprimerDeclinaison' value='Supprimer' class='btn btn-danger' onclick='supprimerDeclinaison()'")
+        $(".modal-body").append("<table id='decli'class='table table-striped table-bordered' style='width:100%'><thead><th>"+["ID"]+"</th><th>"+["Couleur"]+"</th><th>"+["Bonnet"]+"</th><th>"+["Taille"]+"</th><th>"+["Quantite"]+"</th><th>"+["ID-Produit"]+"</th><th></th><tbody>"); // on creer les differentes colonnes et leur nom
         numCaseQuantite = 0;
         // Parcourt tableau, accede à id
         for (var i = 0; i < tableDonneesRecues.length; i++) {
@@ -151,7 +171,7 @@
     // Permet l'affichage ou non du formulaire d'ajout de declinaison
     $(document).ready(function(){
       $("#ajouterDecli").click(function(){
-          $("#formDeclinaison").toggle();
+          $("#formDeclinaison").toggle(1000);
       });
     });
   }
@@ -215,34 +235,15 @@
     })
   }
 
-  </script>
+  // Fonction qui permet la suppression d'une ou plusieurs declinaisons
+  function supprimerDeclinaison(){
+  }
 
-  <!-- Creation de la modale -->
-  <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true" data-backdrop="static"> <!-- data-keyboard="false" -->
-    <div class="modal-dialog" id="modalDialog" role="document">
-      <div class="modal-content" id="modalContent">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalTitle"></h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="location.reload();"> <!-- Un clic sur le bouton fermer recharge la page "Produits"-->
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-        </div>
+  // Fonction réalisant le tableau des produits (dataTables)
+  $(document).ready(function($) {
+      $('#produits').DataTable();
+  } );
 
-        <!-- Bouton fermer en bas de la modale -->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="location.reload();">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Fonction réalisant le tableau des produits (dataTables) -->
-  <script type="text/javascript">
-      $(document).ready(function($) {
-          $('#produits').DataTable();
-      } );
 
 //////////////////////// Selection des lignes et compteurs de lignes selectionnees ----- Peut etre utile pour la suppression ////////////////////////
 //       $(document).ready(function() {
