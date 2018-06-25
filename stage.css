@@ -35,3 +35,7 @@ width: 50%;
   width: 100%;
   border: 2px solid grey;
 }
+
+.selected{
+  background-color: #B0BED9 !important;
+}
