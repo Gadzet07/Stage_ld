@@ -8,11 +8,9 @@
     <link rel="icon" href="./autres/test.jpg">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.css">
     <link href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
-    <!-- <link href="https://cdn.datatables.net/1.10.18/css/jquery.dataTables.min.css"> -->
     <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
     <script src="  https://code.jquery.com/jquery-3.3.1.js"></script>
     <script src="./js/bootstrap.js"> </script>
-    <!-- <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script> -->
     <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
 
@@ -47,7 +45,7 @@
       </div>
 
       <!-- Creation de la modale -->
-      <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true" data-backdrop="static"> <!-- data-keyboard="false" -->
+      <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true" data-backdrop="static">
         <div class="modal-dialog" id="modalDialog" role="document">
           <div class="modal-content" id="modalContent">
             <div class="modal-header">
@@ -74,11 +72,11 @@
         <!-- Connection à la base de donnée -->
         <?php
           $bdd = new PDO('mysql:host=localhost;dbname=stage_ld;charset=utf8', 'root', '');
-          //Selection de toute la table
+          // Selection de toute la table
           $reponse = $bdd->query('SELECT * FROM produits');
             ?>
 
-            <!-- Affichage des produits da la base de donnée dans un tableau -->
+            <!-- Affichage des produits de la base de donnée dans un tableau -->
             <table id="produits" class="table table-striped table-bordered" style="width:100%">
               <!-- Affichage statique du type d'informations -->
             <thead>
@@ -87,12 +85,13 @@
               <th>Marque</th>
               <th>Reference</th>
               <th>Quantite</th>
+              <th>Type</th>
               <th></th>
             </thead>
 
             <!-- Affichage de chaque information au bon endroit -->
               <tbody>
-                <?php foreach ($reponse as $value) //Pour chaque donnée recuperée
+                <?php foreach ($reponse as $value) // Pour chaque donnée recuperée
                   { ?>
                   <tr>
                     <!-- Affichage des différentes information -->
@@ -109,9 +108,9 @@
                         echo "Stock vide!"; // Sinon on affiche "Stock vide!"
                         ?>
                     </td>
-                      <!-- Bouton qui affiche une modale avec les déclinaisons du produit séléctionné -->
-                    <td>
-                        <button onclick="modaleQuantite(<?php echo $value['id'];?>,'<?php echo $value['nom'];?>','<?php echo $value['marque'];?>','<?php echo $value['reference'];?>')" class="btn btn-success" data-toggle="modal" data-target="#modal">
+                    <td><?php echo $value['type']; ?></td>
+                    <td> <!-- Bouton qui affiche une modale avec les déclinaisons du produit séléctionné -->
+                        <button onclick="modaleQuantite('<?php echo $value['id'];?>','<?php echo $value['nom'];?>','<?php echo $value['marque'];?>','<?php echo $value['reference'];?>','<?php echo $value['type'];?>')" class="btn btn-info" data-toggle="modal" data-target="#modal">
                           Afficher
                         </button>
                     </td>
@@ -128,22 +127,24 @@
   function modaleAjouterProduit(){
     $(".modal-title").html("Ajouter un produit"); // Titre de la modale
     $(".modal-body").empty(); // On vide la modale
-    $(".modal-body").append("<p>Nom du produit:<input type='text' id='nomProduit' required></p>"); // Formulaire pour l'ajout du produit
-    $(".modal-body").append("<p>Marque du produit:<input type='text' id='marqueProduit' required></p>");
-    $(".modal-body").append("<p>Reference du produit:<input type='text' id='referenceProduit' autocomplete='off' required></p>");
+    $(".modal-body").append("<p>Nom du produit: <input type='text' id='nomProduit' required></p>"); // Formulaire pour l'ajout du produit
+    $(".modal-body").append("<p>Marque du produit: <input type='text' id='marqueProduit' required></p>");
+    $(".modal-body").append("<p>Reference du produit: <input type='text' id='referenceProduit' autocomplete='off' required></p>");
+    $(".modal-body").append("<p>Type du produit: <select id='typeProduit'> <option>soutien-gorge <option>chaussure <option>vetement</p>")
     $(".modal-body").append("<button onClick='ajaxAjouterProduit()'>Ajouter</button>"); // Bouton "ajouter" qui appelle la fonction d'ajout a la base de donnee
     }
 
   // Fonction qui ajoute le produit cree dans le formulaire a la base de donnees
   function ajaxAjouterProduit(){
-    nomProduit=document.getElementById('nomProduit').value // On recupere toutes les donnees necessaires a l'ajout d'un nouveau produit
-    marqueProduit=document.getElementById('marqueProduit').value
-    referenceProduit=document.getElementById('referenceProduit').value
+    nomProduit=document.getElementById('nomProduit').value; // On recupere toutes les donnees necessaires a l'ajout d'un nouveau produit
+    marqueProduit=document.getElementById('marqueProduit').value;
+    referenceProduit=document.getElementById('referenceProduit').value;
+    typeProduit=document.getElementById('typeProduit').value;
     $.ajax({
-      type:"POST",
-      url:"ajouterProduit.php",
-      data:{'nomProduit': nomProduit, 'marqueProduit': marqueProduit, 'referenceProduit': referenceProduit},
-      success: function(data){
+      type:"POST", // Type de transfert
+      url:"ajouterProduit.php", // On transfert au fichier ajouterProduit.php
+      data:{'nomProduit': nomProduit, 'marqueProduit': marqueProduit, 'referenceProduit': referenceProduit, 'typeProduit':typeProduit}, // On envoie toutes les donnees necessaires
+      success: function(data){ // Si cela fonctionne
         alert("Produit ajouté avec succès!");
       }
     })
@@ -151,7 +152,21 @@
 
   // Fonction réalisant le tableau des produits (dataTables) + permet la selection des elements
   $(document).ready(function($) {
-    var table = $('#produits').DataTable(); // On ajoute dataTables dans le tableau des produits
+    var table = $('#produits').DataTable({ // On ajoute dataTables dans le tableau des produits
+      "columnDefs": [ // On defini les colonnes que l'on ne veut pas afficher
+              {
+                  "targets": [ 0 ],
+                  "visible": false,
+                  "searchable": false
+              },
+              {
+                  "targets": [ 5 ],
+                  "visible": false
+              }
+          ]
+    })
+
+
 
     $('#produits tbody').on( 'click', 'tr', function () {
       $(this).toggleClass('selected'); // La classe "selected" est ajoutee aux elements selectionnes
@@ -180,10 +195,10 @@
   // Script qui permet de recuperer et d'afficher les declinaisons de la base de donnees
   function modaleQuantite(id, name, marque, reference){
     $.ajax({
-      type:"POST", // Type de transfert
-      url:"detailsV2.php", // On transfert au fichier detailsV2.php
-      data:"id=" + id, // On envoie l'id
-      success: function(donnesRecues) { // Si cela fonctionne
+      type:"POST",
+      url:"details.php",
+      data:"id=" + id,
+      success: function(donnesRecues) {
         tableDonneesRecues = JSON.parse(donnesRecues); // On stocke les donnees recues
         $(".modal-title").html("Modification quantite " + name + " " + marque + " " + reference + "<input type='hidden' id='idProduit' value='" + id + "'>"); // Titre de la modale qui change en fonction du produit selectionne
         $(".modal-body").empty(); // On vide la modale
@@ -198,7 +213,7 @@
                         $("#decli").append("<tr><td>" +tableDonneesRecues[i]["id"]+ "</td><td>" +tableDonneesRecues[i]["couleur"]+ "</td><td>" +tableDonneesRecues[i]["bonnet"]+ "</td><td>" +tableDonneesRecues[i]["taille"]+ "</td><td><input id='quantiteProduit" +numCaseQuantite+ "' type='number' value=" +tableDonneesRecues[i]["quantite"]+ "></td><td>" +tableDonneesRecues[i]["id_produit"]+ "</td><td><button onClick='reloadQte(" +tableDonneesRecues[i]["id"]+ ", " +numCaseQuantite+ ")'>Actualiser</button></td></tr>");
                         qte=document.getElementById("quantiteProduit" +numCaseQuantite+ "").value;
                         numCaseQuantite++;
-                      }else{ // S'il n'y a rien dans bonnet on affiche tout ormis la colonne bonnet
+                      }else{ // S'il n'y a rien dans bonnet on affiche NA dans bonnet
                         $("#decli").append("<tr><td>" +tableDonneesRecues[i]["id"]+ "</td><td>" +tableDonneesRecues[i]["couleur"]+ "</td><td>NA</td><td>" +tableDonneesRecues[i]["taille"]+ "</td><td><input id='quantiteProduit" +numCaseQuantite+ "' type='number' value=" +tableDonneesRecues[i]["quantite"]+ "></td><td>" +tableDonneesRecues[i]["id_produit"]+"</td><td><button onClick='reloadQte(" +tableDonneesRecues[i]["id"]+ ", " +numCaseQuantite+ ")'>Actualiser</button></td></tr>");
                         qte=document.getElementById("quantiteProduit" +numCaseQuantite+ "").value;
                         numCaseQuantite++;
@@ -207,7 +222,19 @@
         $(".modal-body").append("</tbody></table>"); // On ferme les balises du tableau
 
         $(document).ready(function($) {
-        var table = $('#decli').DataTable(); // On ajoute dataTables dans le tableau des declinaisons
+        var table = $('#decli').DataTable({ // On ajoute dataTables dans le tableau des declinaisons
+        "columnDefs": [ // On defini les colonnes que l'on ne veut pas afficher
+                {
+                    "targets": [ 0 ],
+                    "visible": false,
+                    "searchable": false
+                },
+                {
+                    "targets": [ 5 ],
+                    "visible": false
+                }
+            ]
+      })
 
         $('#decli tbody').on( 'click', 'tr', function () {
           $(this).toggleClass('selected'); // La classe "selected" est ajoutee aux elements selectionnes
@@ -249,7 +276,7 @@
     idProduit=document.getElementById('idProduit').value;
     $.ajax({
       type:"POST",
-      url:"",
+      url:"ajouterDeclinaison",
       data:{'couleurDecli': couleurDecli, 'bonnetDecli': bonnetDecli, 'tailleDecli': tailleDecli, 'quantiteDecli': quantiteDecli, 'idProduit': idProduit},
       success: function(data){
         alert("Déclinaison ajoutée avec succès!");
