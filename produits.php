@@ -131,7 +131,7 @@
     $(".modal-body").append("<p>Marque du produit: <input type='text' id='marqueProduit' required></p>");
     $(".modal-body").append("<p>Reference du produit: <input type='text' id='referenceProduit' autocomplete='off' required></p>");
     $(".modal-body").append("<p>Type du produit: <select id='typeProduit'> <option>soutien-gorge <option>chaussure <option>vetement</p>")
-    $(".modal-body").append("<button onClick='ajaxAjouterProduit()'>Ajouter</button>"); // Bouton "ajouter" qui appelle la fonction d'ajout a la base de donnee
+    $(".modal-body").append("<p><button onClick='ajaxAjouterProduit()'>Ajouter</button></p>"); // Bouton "ajouter" qui appelle la fonction d'ajout a la base de donnee
     }
 
   // Fonction qui ajoute le produit cree dans le formulaire a la base de donnees
@@ -145,7 +145,10 @@
       url:"ajouterProduit.php", // On transfert au fichier ajouterProduit.php
       data:{'nomProduit': nomProduit, 'marqueProduit': marqueProduit, 'referenceProduit': referenceProduit, 'typeProduit':typeProduit}, // On envoie toutes les donnees necessaires
       success: function(data){ // Si cela fonctionne
+        if(data=="success") // Si le serveur a reussi a ajouter le produit
         alert("Produit ajouté avec succès!");
+        else
+        alert("Erreur lors de l'ajout du produit!");
       }
     })
   }
@@ -166,18 +169,16 @@
           ]
     })
 
-
-
     $('#produits tbody').on( 'click', 'tr', function () {
       $(this).toggleClass('selected'); // La classe "selected" est ajoutee aux elements selectionnes
 
       // Fonction qui permet la suppression d'un ou plusieurs produits
       $('#boutonSupprimerProduit').click( function () {
           var tabl = [];
+          if(confirm("Etes-vous sûr de vouloir supprimer ce(s) produit(s)?")){ // Alerte de confirmation de suppression
           table.rows('.selected').every(function(rowIdx) {
             tabl.push(table.row(rowIdx).data())
             })
-            if(confirm("Etes-vous sûr de vouloir supprimer ce(s) produit(s)?")){ // Alerte de confirmation de suppression
           $.ajax({
             type:"POST",
             url:"SupprimerProduit.php",
@@ -203,7 +204,7 @@
         $(".modal-title").html("Modification quantite " + name + " " + marque + " " + reference + "<input type='hidden' id='idProduit' value='" + id + "'>"); // Titre de la modale qui change en fonction du produit selectionne
         $(".modal-body").empty(); // On vide la modale
         $(".modal-body").html("<div id='ajouterDecliDiv' onClick='afficherFormDecli()'><input type='button' id='ajouterDecli' value='Ajouter' class='btn btn-success'></div>"); // Bouton pour afficher le formulaire d'ajout de declinaison
-        $(".modal-body").append("<div id='formDeclinaison' style='display:none'><p>Couleur de la declinaison:<input type='text' id='couleurDecli' required></p><p>Bonnet de la declinaison:<input type='text' id='bonnetDecli'></p><p>Taille de la declinaison:<input type='varchar' id='tailleDecli' autocomplete='off' required></p><p>Quantite de la declinaison:<input type='int' id='quantiteDecli'</p><p><button onClick='ajaxAjouterDeclinaison()'>Ajouter</button></p></div>");
+        $(".modal-body").append("<div id='formDeclinaison' style='display:none'><p></p><p>Couleur de la declinaison: <input type='text' id='couleurDecli' required></p><p>Bonnet de la declinaison: <input type='text' id='bonnetDecli'></p><p>Taille de la declinaison: <input type='varchar' id='tailleDecli' autocomplete='off' required></p><p>Quantite de la declinaison: <input type='number' id='quantiteDecli'</p><p><button onClick='ajaxAjouterDeclinaison()'>Ajouter</button></p></div>");
         $(".modal-body").append("<br/> <input type='button' id='boutonSupprimerDecli' value='Supprimer' class='btn btn-danger'>")
         $(".modal-body").append("<table id='decli'class='table table-striped table-bordered' style='width:100%'><thead><th>"+["ID"]+"</th><th>"+["Couleur"]+"</th><th>"+["Bonnet"]+"</th><th>"+["Taille"]+"</th><th>"+["Quantite"]+"</th><th>"+["ID-Produit"]+"</th><th></th><tbody>"); // On creer les differentes colonnes et leur nom
         numCaseQuantite = 0;
@@ -239,7 +240,7 @@
         $('#decli tbody').on( 'click', 'tr', function () {
           $(this).toggleClass('selected'); // La classe "selected" est ajoutee aux elements selectionnes
 
-          // Fonction qui permet la suppression d'un ou plusieurs produits
+          // Fonction qui permet la suppression d'une ou plusieurs declinaisons
           $('#boutonSupprimerDecli').click( function () {
               var tabl = [];
               table.rows('.selected').every(function(rowIdx) {
@@ -279,7 +280,11 @@
       url:"ajouterDeclinaison",
       data:{'couleurDecli': couleurDecli, 'bonnetDecli': bonnetDecli, 'tailleDecli': tailleDecli, 'quantiteDecli': quantiteDecli, 'idProduit': idProduit},
       success: function(data){
+        if(data=="success") // Si le serveur a reussi a ajouter la declinaison
         alert("Déclinaison ajoutée avec succès!");
+        else {
+          alert("Erreur lors de l'ajout de la déclinaison!");
+        }
       }
     })
   }
